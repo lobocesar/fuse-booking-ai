@@ -1,0 +1,27 @@
+{
+  "name": "fuse-booking-ai",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test:ui": "npx playwright test --ui",
+    "test:codegen": "npx playwright codegen",
+    "test:report": "npx playwright show-report"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lobocesar/fuse-booking-ai.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lobocesar/fuse-booking-ai/issues"
+  },
+  "homepage": "https://github.com/lobocesar/fuse-booking-ai#readme",
+  "devDependencies": {
+    "@faker-js/faker": "^9.6.0",
+    "@playwright/test": "^1.51.1",
+    "@types/node": "^22.13.13"
+  }
+}
