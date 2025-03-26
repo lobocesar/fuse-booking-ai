@@ -8,6 +8,8 @@ export class BookingPage {
     public firstResultOption: Locator;
     public submitBtn: Locator;
     public displayDate: Locator;
+    public propertyCounter: Locator;
+
     protected page: Page;
 
     constructor(page: Page) {
@@ -20,6 +22,8 @@ export class BookingPage {
         this.submitBtn = page.locator('[type="submit"]')
             .or(page.getByRole('button', { name: 'Search' }));
         this.displayDate = page.getByTestId('date-display-field-start');
+        this.propertyCounter = page.getByText(/.+?: \d{1,3}(?:,\d{3})* (property|properties)? found/)
+            .or(page.getByText(/.+?: no properties found/));
     }
 
     public async checkLogo(): Promise<void> {
@@ -50,17 +54,46 @@ export class BookingPage {
         await this.submitBtn.click();
     }
 
-    public async checkRelevantResults(city: string): Promise<void> {
-        const propertyCounter = this.page.getByText(/.+?: \d{1,3}(?:,\d{3})* (property|properties)? found/);
-        await expect(propertyCounter, "City counter visibility").toBeVisible();
-        expect(await propertyCounter.textContent()).toContain(city);
-        const results = this.page.getByRole('list').filter({ hasText: `Browse the results for ${city}` });
-        const resultList = await results.getByRole('listitem').all();
-        expect(resultList.length, "Result List greater than 0").toBeGreaterThan(0);
-        await expect(resultList[0], "First Result visibility").toBeVisible();
-        test.info().annotations.push({ type: `Properties`, description: (await propertyCounter.textContent())?.toString() });
-        test.info().annotations.push({ type: `First Result - Title`, description: `${await resultList[0].getByTestId('title').textContent()}` });
-        test.info().annotations.push({ type: `First Result - Score`, description: `${await resultList[0].getByTestId('review-score').textContent()}` });
+    public async filterByReview(option: "Very Good: 8+" | "Wonderful: 9+"): Promise<void> {
+        const reviewFilter = this.page.getByRole('group', { name: 'Review score' });
+        await this.popupHandler();
+        await expect(reviewFilter, `Check filter is visible`).toBeVisible({ timeout: 10000 });
+        await reviewFilter.scrollIntoViewIfNeeded({ timeout: 5000 });
+        const filterItem = reviewFilter.getByTestId("filters-group-label-content").filter({ hasText: option });
+        await filterItem.click();
+        await expect(this.propertyCounter, "City counter visibility").toBeVisible();
+        await this.propertyCounter.scrollIntoViewIfNeeded({ timeout: 5000 });
+        const review_score = option === "Very Good: 8+" ? "80" : "90";
+        await expect(this.page.getByTestId(`filter:review_score=${review_score}`), "Filter Review added visibility").toBeVisible();
+    }
+
+    public async orderByLowerPrice(): Promise<void> {
+        const sorter = this.page.getByTestId('sorters-dropdown-trigger');
+        await this.popupHandler();
+        await expect(sorter, "Sorter visibility").toBeVisible();
+        await sorter.click();
+        const sorterOption = this.page.getByRole('option', { name: 'Property rating (low to high)' });
+        await sorterOption.click();
+        await expect(this.propertyCounter, "City counter visibility").toBeVisible();
+        await this.propertyCounter.scrollIntoViewIfNeeded({ timeout: 5000 });
+        await expect(this.page.getByTestId(`sorters-dropdown-trigger`), "Sorter added visibility").toBeVisible();
+    }
+
+    public async checkRelevantResults(city: string, noProperty?: boolean): Promise<void> {
+        await expect(this.propertyCounter, "City counter visibility").toBeVisible();
+        expect(await this.propertyCounter.textContent()).toContain(city);
+        if (!noProperty) {
+            const results = this.page.getByRole('list').filter({ hasText: `Browse the results for ${city}` });
+            const resultList = await results.getByRole('listitem').all();
+            await expect(resultList[0], "First Result visibility").toBeVisible({ timeout: 10000 });
+            expect(resultList.length, "Result List greater than 0").toBeGreaterThan(0);
+            test.info().annotations.push({ type: `Properties`, description: (await this.propertyCounter.textContent())?.toString() });
+            test.info().annotations.push({ type: `First Result - Title`, description: `${await resultList[0].getByTestId('title').textContent()}` });
+            test.info().annotations.push({ type: `First Result - Score`, description: `${await resultList[0].getByTestId('review-score').textContent()}` });
+        }else{
+            await expect(this.page.getByText('These properties match your search but are outside'), "Error message visibility").toBeVisible();
+            test.info().annotations.push({ type: `Properties`, description:'NOT FOUND' });
+        }
     }
 
     public async popupHandler(): Promise<void> {
