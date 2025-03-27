@@ -12,9 +12,10 @@ export class BookingPage {
     protected firstHotelTitle: Locator;
     protected page: Page;
 
-    static readonly TIMEOUT_20_MIN: number = 20000;
-    static readonly TIMEOUT_10_MIN: number = 10000;
-    static readonly TIMEOUT_5_MIN: number = 5000;
+    static readonly TIMEOUT_20: number = 20000;
+    static readonly TIMEOUT_30: number = 30000;
+    static readonly TIMEOUT_10: number = 10000;
+    static readonly TIMEOUT_5: number = 5000;
 
     // Resilient locator strategy using multiple fallback selectors
     constructor(page: Page) {
@@ -37,11 +38,11 @@ export class BookingPage {
         await this.searchInput.clear();
         await this.searchInput.focus();
         await this.searchInput.fill(city);
-        await expect(this.firstResultOption).toHaveText(new RegExp(city, 'i'), { timeout: BookingPage.TIMEOUT_10_MIN });
+        await expect(this.firstResultOption).toHaveText(new RegExp(city, 'i'), { timeout: BookingPage.TIMEOUT_10 });
         await this.submitBtn.click();
         await this.popupHandler();
         if (hideDisplayDate) {
-            await expect(this.displayDate, "Display date visibility").toBeVisible({ timeout: BookingPage.TIMEOUT_10_MIN });
+            await expect(this.displayDate, "Display date visibility").toBeVisible({ timeout: BookingPage.TIMEOUT_10 });
             await this.displayDate.click();
         }
     }
@@ -62,12 +63,12 @@ export class BookingPage {
     public async filterByReview(option: "Very Good: 8+" | "Wonderful: 9+"): Promise<void> {
         const reviewFilter = this.page.getByRole('group', { name: 'Review score' });
         await this.popupHandler();
-        await expect(reviewFilter, `Check filter is visible`).toBeVisible({ timeout: BookingPage.TIMEOUT_10_MIN });
-        await reviewFilter.scrollIntoViewIfNeeded({ timeout: BookingPage.TIMEOUT_5_MIN });
+        await expect(reviewFilter, `Check filter is visible`).toBeVisible({ timeout: BookingPage.TIMEOUT_10 });
+        await reviewFilter.scrollIntoViewIfNeeded({ timeout: BookingPage.TIMEOUT_5 });
         const filterItem = reviewFilter.getByTestId("filters-group-label-content").filter({ hasText: option });
         await filterItem.click();
         await expect(this.propertyCounter, "City counter visibility").toBeVisible();
-        await this.propertyCounter.scrollIntoViewIfNeeded({ timeout: BookingPage.TIMEOUT_5_MIN });
+        await this.propertyCounter.scrollIntoViewIfNeeded({ timeout: BookingPage.TIMEOUT_5 });
         const review_score = option === "Very Good: 8+" ? "80" : "90";
         await expect(this.page.getByTestId(`filter:review_score=${review_score}`), "Filter Review added visibility").toBeVisible();
     }
@@ -80,7 +81,7 @@ export class BookingPage {
         const sorterOption = this.page.getByRole('option', { name: 'Property rating (low to high)' });
         await sorterOption.click();
         await expect(this.propertyCounter, "City counter visibility").toBeVisible();
-        await this.propertyCounter.scrollIntoViewIfNeeded({ timeout: BookingPage.TIMEOUT_5_MIN });
+        await this.propertyCounter.scrollIntoViewIfNeeded({ timeout: BookingPage.TIMEOUT_5 });
         await expect(this.page.getByTestId(`sorters-dropdown-trigger`), "Sorter added visibility").toBeVisible();
     }
 
@@ -90,7 +91,7 @@ export class BookingPage {
         if (!noProperty) {
             const results = this.page.getByRole('list').filter({ hasText: `Browse the results for ${city}` });
             const resultList = await results.getByRole('listitem').all();
-            await expect(resultList[0], "First Result visibility").toBeVisible({ timeout: BookingPage.TIMEOUT_20_MIN });
+            await expect(resultList[0], "First Result visibility").toBeVisible({ timeout: BookingPage.TIMEOUT_20 });
             expect(resultList.length, "Result List greater than 0").toBeGreaterThan(0);
             test.info().annotations.push({ type: `Properties found`, description: (await this.propertyCounter.textContent())?.toString() });
             this.firstHotelTitle = resultList[0].getByTestId('title');
@@ -116,9 +117,9 @@ export class BookingPage {
         const hotelAmenities = this.page.locator('[data-testid="property-most-popular-facilities-wrapper"]').first().locator('ul li');
         const hotelAmenitiesList = await hotelAmenities.all();
 
-        await expect(hotelName, "Hotel Name Visibility").toBeVisible({ timeout: BookingPage.TIMEOUT_10_MIN });
-        await expect(hotelAddress, "Hotel Address Visibility").toBeVisible({ timeout: BookingPage.TIMEOUT_10_MIN });
-        await expect(hotelAmenitiesList[0], "Hotel Amenities Visibility").toBeVisible({ timeout: BookingPage.TIMEOUT_10_MIN });
+        await expect(hotelName, "Hotel Name Visibility").toBeVisible({ timeout: BookingPage.TIMEOUT_10 });
+        await expect(hotelAddress, "Hotel Address Visibility").toBeVisible({ timeout: BookingPage.TIMEOUT_10 });
+        await expect(hotelAmenitiesList[0], "Hotel Amenities Visibility").toBeVisible({ timeout: BookingPage.TIMEOUT_10 });
         test.info().annotations.push({ type: `Selected Hotel - Name`, description: (await hotelName.getByRole('heading').textContent())?.toString() });
         test.info().annotations.push({ type: `Selected Hotel - Rating Starts`, description: (await hotelRating.count())?.toString() });
         test.info().annotations.push({ type: `Selected Hotel - Photos Qty`, description: (await hotelPhotosQty.innerText()) });
@@ -138,7 +139,7 @@ export class BookingPage {
         const parentElement = fromInput.locator('xpath=..');
         const closeButtons = await parentElement.getByRole('listitem').getByRole('button', { name: 'Remove value' }).all();
         for (let i = 0; i < closeButtons.length; i++) {
-            await expect(closeButtons[i], "Close button visibility").toBeVisible({ timeout: BookingPage.TIMEOUT_10_MIN });
+            await expect(closeButtons[i], "Close button visibility").toBeVisible({ timeout: BookingPage.TIMEOUT_10 });
             await closeButtons[i].click();
         }
 
@@ -187,17 +188,17 @@ export class BookingPage {
         await this.page.getByRole('button', { name: 'Search' }).click();
 
         // Wait until results are visible
-        await expect(this.page.getByRole('button', { name: 'View Deal' }).first(), "First deal button visibility").toBeVisible({ timeout: BookingPage.TIMEOUT_20_MIN });
-        await expect(this.page.getByRole('button', { name: 'Stops' }).first(), "First stop button visibility").toBeVisible({ timeout: BookingPage.TIMEOUT_20_MIN });
+        await expect(this.page.getByRole('button', { name: 'View Deal' }).first(), "First deal button visibility").toBeVisible({ timeout: BookingPage.TIMEOUT_30 });
+        await expect(this.page.getByRole('button', { name: 'Stops' }).first(), "First stop button visibility").toBeVisible({ timeout: BookingPage.TIMEOUT_20 });
     }
 
     public async checkFirstFlight(): Promise<void> {
         const priceLocator = this.page.locator('[class*="price-text"]').first();
-        await expect(priceLocator, "Price visibility").toBeVisible({ timeout: BookingPage.TIMEOUT_20_MIN });
+        await expect(priceLocator, "Price visibility").toBeVisible({ timeout: BookingPage.TIMEOUT_20 });
         test.info().annotations.push({ type: `First Deal - Price`, description: `${await priceLocator.textContent()}` });
 
         const airlineLocator = this.page.locator('[class*="provider-name"]').first();
-        await expect(airlineLocator, "Airline visibility").toBeVisible({ timeout: BookingPage.TIMEOUT_20_MIN })
+        await expect(airlineLocator, "Airline visibility").toBeVisible({ timeout: BookingPage.TIMEOUT_20 })
         test.info().annotations.push({ type: `First Deal - Airline`, description: `${await airlineLocator.textContent()}` });
 
     }
@@ -222,9 +223,10 @@ export class BookingPage {
     public async popupHandler(): Promise<void> {
         return await this.page.addLocatorHandler(this.page.getByText('Sign in, save money'), async () => {
             const dismissButton = this.page.getByRole('button', { name: 'Dismiss sign-in info.' });
+            await expect(dismissButton).toBeVisible({ timeout: BookingPage.TIMEOUT_10 });
             await dismissButton.click();
-            await expect(dismissButton).not.toBeAttached({ timeout: BookingPage.TIMEOUT_10_MIN });
-            await expect(this.page.getByAltText('Sign in, save money')).not.toBeAttached({ timeout: BookingPage.TIMEOUT_10_MIN });
+            await expect(this.page.getByAltText('Sign in, save money')).not.toBeAttached({ timeout: BookingPage.TIMEOUT_10 });
+            await this.page.keyboard.press('Escape');
             console.log('Popup was closed.');
         });
     }
