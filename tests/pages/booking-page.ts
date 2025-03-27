@@ -134,7 +134,7 @@ export class BookingPage {
     public async setNextMonthFlightDates(fromCity: string, toCity: string, nextMonthQty: number, fromDay: number, toDay: number): Promise<void> {
         await this.popupHandler();
         // Clean all current cities
-        await this.page.getByRole('listitem').filter({ hasText: 'Montevideo (MVD)' }).getByRole('button').click();
+        //await this.page.getByRole('listitem').filter({ hasText: 'Montevideo (MVD)' }).getByRole('button').click();
         const fromInput = this.page.locator('input[aria-label="Flight origin input"]');
         const parentElement = fromInput.locator('xpath=..');
         const closeButtons = await parentElement.getByRole('listitem').getByRole('button', { name: 'Remove value' }).all();
