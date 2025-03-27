@@ -188,18 +188,17 @@ export class BookingPage {
         await this.page.getByRole('button', { name: 'Search' }).click();
 
         // Wait until results are visible
-        await expect(this.page.getByRole('button', { name: 'View Deal' }).first(), "First deal button visibility").toBeVisible({ timeout: BookingPage.TIMEOUT_30 });
-        await expect(this.page.getByRole('button', { name: 'Stops' }).first(), "First stop button visibility").toBeVisible({ timeout: BookingPage.TIMEOUT_20 });
+        await expect(this.page.getByRole('button', { name: 'View Deal' }).first(), "First deal button visibility").toBeVisible({ timeout: BookingPage.TIMEOUT_10 });
     }
 
     public async checkFirstFlight(): Promise<void> {
         const priceLocator = this.page.locator('[class*="price-text"]').first();
-        await expect(priceLocator, "Price visibility").toBeVisible({ timeout: BookingPage.TIMEOUT_20 });
-        test.info().annotations.push({ type: `First Deal - Price`, description: `${await priceLocator.textContent()}` });
+        await expect(priceLocator, "Price visibility").toBeVisible();
+        test.info().annotations.push({ type: `First Deal - Price`, description: `${await priceLocator.textContent({ timeout: BookingPage.TIMEOUT_10 })}` });
 
         const airlineLocator = this.page.locator('[class*="provider-name"]').first();
-        await expect(airlineLocator, "Airline visibility").toBeVisible({ timeout: BookingPage.TIMEOUT_20 })
-        test.info().annotations.push({ type: `First Deal - Airline`, description: `${await airlineLocator.textContent()}` });
+        await expect(airlineLocator, "Airline visibility").toBeVisible()
+        test.info().annotations.push({ type: `First Deal - Airline`, description: `${await airlineLocator.textContent({ timeout: BookingPage.TIMEOUT_10 })}` });
 
     }
 

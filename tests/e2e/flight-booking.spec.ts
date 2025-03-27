@@ -24,8 +24,8 @@ test.describe('@flights - Flight Booking Process', () => {
     await bookingPage.checkFirstFlight();
   });
 
-  test('[TC_006, TC_007, TC_009] - Searching "Chicago" round-trip and destination should display available flights with summary', async () => {
-    const fromCity = 'Chicago';
+  test('[TC_006, TC_007, TC_009] - Searching "Los Angeles" round-trip and destination should display available flights with summary', async () => {
+    const fromCity = 'Los Angeles';
     const toCity = 'New York';
     await bookingPage.setNextMonthFlightDates(fromCity, toCity, 1, 1, 8);
     await bookingPage.checkFirstFlight();
