@@ -134,16 +134,14 @@ export class BookingPage {
     public async setNextMonthFlightDates(fromCity: string, toCity: string, nextMonthQty: number, fromDay: number, toDay: number): Promise<void> {
         await this.popupHandler();
         // Clean all current cities
-        //await this.page.getByRole('listitem').filter({ hasText: 'Montevideo (MVD)' }).getByRole('button').click();
-        const fromInput = this.page.locator('input[aria-label="Flight origin input"]');
-        const parentElement = fromInput.locator('xpath=..');
-        const closeButtons = await parentElement.getByRole('listitem').getByRole('button', { name: 'Remove value' }).all();
+        const closeButtons = await this.page.locator('[role="list"] [role="button"]').all();
         for (let i = 0; i < closeButtons.length; i++) {
             await expect(closeButtons[i], "Close button visibility").toBeVisible({ timeout: BookingPage.TIMEOUT_10 });
             await closeButtons[i].click();
         }
 
         // Setting from city
+        const fromInput = this.page.locator('input[aria-label="Flight origin input"]');
         await expect(fromInput, "From input visibility").toBeVisible();
         await fromInput.fill(fromCity);
         const firstSmartyOrigin = this.page.locator('#flight-origin-smarty-input-list').first();
