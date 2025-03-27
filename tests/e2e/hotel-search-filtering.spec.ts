@@ -1,18 +1,22 @@
 import { test } from '@playwright/test';
 import BookingPage from '../pages/booking-page';
 
-const URL = `https://www.booking.com/`;
+const baseURL = `https://www.booking.com`;
 let bookingPage: BookingPage;
 
-test.describe('Hotel Search & Filtering', () => {
+test.describe('@hotel - Hotel Search & Filtering', () => {
+
+  test.use({ storageState: { cookies: [], origins: [] } });
 
   test.beforeEach(async ({ page }) => {
+    test.setTimeout(120000);
+    await page.context().clearCookies();
     bookingPage = new BookingPage(page);
-    await page.goto(URL);
+    await page.goto(baseURL);
     await bookingPage.checkLogo();
   });
 
-  test.only('TC_001 - Searching for hotels in "New York" should display relevant results', async ({ page }) => {
+  test('TC_001 - Searching for hotels in "New York" should display relevant results', async () => {
     const city = 'New York';
     await bookingPage.searchPlace(city, true);
     await bookingPage.checkRelevantResults(city);

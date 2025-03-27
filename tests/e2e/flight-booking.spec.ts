@@ -1,18 +1,34 @@
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
+import BookingPage from '../pages/booking-page';
 
-test('has title', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+const baseURL = `https://www.booking.com`;
+let bookingPage: BookingPage;
 
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Playwright/);
-});
+test.describe('@flights - Flight Booking Process', () => {
 
-test('get started link', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+  test.use({ storageState: { cookies: [], origins: [] } });
 
-  // Click the get started link.
-  await page.getByRole('link', { name: 'Get started' }).click();
+  test.beforeEach(async ({ page }) => {
+    test.setTimeout(120000);
+    await page.context().clearCookies();
+    bookingPage = new BookingPage(page);
+    await page.goto(baseURL);
+    await bookingPage.checkLogo();
+    await bookingPage.gotoFlights();
+  });
 
-  // Expects page to have a heading with the name of Installation.
-  await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
+  test('[TC_006, TC_007, TC_009] - Searching "New York" round-trip and destination should display available flights with summary', async () => {
+    const fromCity = 'New York';
+    const toCity = 'Los Angeles';
+    await bookingPage.setNextMonthFlightDates(fromCity, toCity, 1, 1, 15);
+    await bookingPage.checkFirstFlight();
+  });
+
+  test('[TC_006, TC_007, TC_009] - Searching "Chicago" round-trip and destination should display available flights with summary', async () => {
+    const fromCity = 'Chicago';
+    const toCity = 'New York';
+    await bookingPage.setNextMonthFlightDates(fromCity, toCity, 1, 1, 8);
+    await bookingPage.checkFirstFlight();
+  });
+
 });

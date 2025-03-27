@@ -23,9 +23,9 @@ I used ChatGPT to refine test cases by adding edge cases, data validation scenar
 ### **Test Scenarios**
 ✅ **TC_006** - Searching for a round-trip flight should enable return date selection.  
 ✅ **TC_007** - Selecting departure & destination should display available flights.  
-✅ **TC_008** - Entering an invalid date range should trigger an error message.  
+✅ **TC_008 (Deprecated)** - Entering an invalid date range should trigger an error message.  
 ✅ **TC_009** - Proceeding to checkout should display a booking summary.  
-✅ **TC_010 (Edge Case)** - Booking a flight with an unavailable seat should display an error.  
+✅ **TC_010 (Edge Case) (Deprecated)** - Booking a flight with an unavailable seat should display an error.  
 
 ---
 
@@ -38,7 +38,7 @@ I used ChatGPT to refine test cases by adding edge cases, data validation scenar
 ✅ **TC_013** - Verify that a photo gallery is present and images can be navigated.  
 ✅ **TC_014** - Verify that hotel amenities (Wi-Fi, parking, pool) are visible.  
 ✅ **TC_015** - Verify that user reviews and ratings are displayed.  
-✅ **TC_016 (Edge Case)** - If a hotel has no reviews, display a "No reviews yet" message.  
+✅ **TC_016 (Edge Case) (Not Automated)** - If a hotel has no reviews, display a "No reviews yet" message.  
 
 ---
 

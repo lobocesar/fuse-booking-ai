@@ -4,6 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test:all": "npx playwright test tests/e2e/ --project=chromium",
+    "test:all:hotels": "npx playwright test tests/e2e/ --grep @hotel --project=chromium",
+    "test:all:flights": "npx playwright test tests/e2e/ --grep @flights --project=chromium",
     "test:ui": "npx playwright test --ui",
     "test:codegen": "npx playwright codegen",
     "test:report": "npx playwright show-report"
