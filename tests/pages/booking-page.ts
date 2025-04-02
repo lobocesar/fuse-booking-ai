@@ -26,7 +26,7 @@ export class BookingPage {
             .or(page.getByRole('combobox', { name: 'Where are you going?' }));
         this.firstResultOption = page.locator('[data-testid="autocomplete-results-options"] li').first();
         this.submitBtn = page.locator('[type="submit"]')
-            .or(page.getByRole('button', { name: 'Search' }));
+            .or(page.getByRole('button', { name: 'Search' })).first();
         this.displayDate = page.getByTestId('date-display-field-start');
         this.propertyCounter = page.getByText(/.+?: \d{1,3}(?:,\d{3})* (property|properties)? found/)
             .or(page.getByText(/.+?: no properties found/));
